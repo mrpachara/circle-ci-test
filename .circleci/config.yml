@@ -13,8 +13,8 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
+          name: Test << pipeline.git.branch >>
           command: yarn run test
-          name: Run YARN tests
   deploy:
     executor:
       name: node/default
@@ -25,7 +25,10 @@ jobs:
           pkg-manager: yarn
       - run:
           name: Build << pipeline.git.branch >>
-          command: yarn run build
+          command: PUBLIC_URL=/circle-ci-test yarn run build
+      - run:
+          name: Deploy to gh-pages
+          command: yarn run deploy
 
 workflows:
   test_and_deploy_my_app:
