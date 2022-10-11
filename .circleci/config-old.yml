@@ -15,20 +15,8 @@ jobs:
       - run:
           command: yarn run test
           name: Run YARN tests
-  deploy:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          name: Build << pipeline.git.branch >>
-          command: yarn run build
 
 workflows:
-  test_and_deploy_my_app:
+  test_my_app:
     jobs:
       - install-and-test
-      - deploy
