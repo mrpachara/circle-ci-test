@@ -39,6 +39,6 @@ jobs:
 workflows:
   test_and_deploy_my_app:
     jobs:
-      - test-and-deploy
+      - test-and-deploy:
           context:
             - github-context
