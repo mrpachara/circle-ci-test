@@ -5,15 +5,16 @@ orbs:
 
 jobs:
   install-and-test:
-    docker:
-      - image: 'cimg/base:stable'
+    executor:
+      name: node/default
+      tag: '16'
     steps:
       - checkout
-      # - node/install:
-      #     install-yarn: true
-      #     node-version: '16.13'
-      - node/run:
-        yarn-run: test
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          command: yarn run test
+          name: Run YARN tests
 
 workflows:
   test_my_app:
