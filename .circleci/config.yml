@@ -1,14 +1,11 @@
 version: 2.1
 
-jobs:
-  hello-job:
-    machine:
-      image: ubuntu-2204:2022.07.1
-    steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+orbs:
+  node: circleci/node@5.0.3
 
 workflows:
-  my-workflow:
+  test_my_app:
     jobs:
-      - hello-job
+      - node/test:
+          version: 16.14
+          install-yarn: true
