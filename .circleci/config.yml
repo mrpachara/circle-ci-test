@@ -9,10 +9,10 @@ jobs:
       - image: 'cimg/base:stable'
     steps:
       - checkout
-      - node/install:
+      - node/run:
           install-yarn: true
           node-version: '16.13'
-      - run: yarn run test
+          yarn-run: test
 
 workflows:
   test_my_app:
