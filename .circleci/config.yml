@@ -8,8 +8,14 @@ jobs:
     executor:
       name: node/default
       tag: '16.17'
+    environment:
+      - REPOURL: << pipeline.project.git_url >>
     steps:
       - checkout
+      - run:
+          name: Setup evironment variables
+          command: |
+              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
       - node/install-packages:
           pkg-manager: yarn
       - run:
@@ -17,7 +23,7 @@ jobs:
           command: yarn run test
       - run:
           name: Build << pipeline.git.branch >>
-          command: PUBLIC_URL=/circle-ci-test yarn run build
+          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
       - run:
           name: Setup git user
           command: |
@@ -28,10 +34,12 @@ jobs:
           command: |
               echo ${CIRCLE_PROJECT_REPONAME}
               echo ${CIRCLE_REPOSITORY_URL}
-      # - run:
-      #     name: Setup Github token
-      #     command: |
-      #       git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+              echo ${REPOURL}
+              echo ${REPOPATH}
+      - run:
+          name: Setup Github token
+          command: |
+            git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/mrpachar/${GITHUB_REPOSITORY}.git
       - run:
           name: Deploy to gh-pages
           command: yarn run deploy
