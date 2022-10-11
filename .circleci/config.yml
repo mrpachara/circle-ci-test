@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Setup git user
           command: <
-            git config --global user.email "mrpachara@gmail.com"
+            git config --global user.email "mrpachara@gmail.com" && \
             git config --global user.name "Pachara Tinamas"
       - run:
           name: Deploy to gh-pages
