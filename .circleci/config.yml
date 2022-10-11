@@ -6,6 +6,7 @@ orbs:
 workflows:
   test_my_app:
     jobs:
-      - node/test:
+      - node/install:
           version: "16.14"
           install-yarn: true
+      - run: yarn run test
