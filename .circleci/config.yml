@@ -4,37 +4,7 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
-  initial:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-  test:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          name: Test << pipeline.git.branch >>
-          command: yarn run test
-  build:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          name: Build << pipeline.git.branch >>
-          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
-  deploy:
+  test-and-deploy:
     executor:
       name: node/default
       tag: '16.17'
@@ -42,24 +12,33 @@ jobs:
       - REPOURL: << pipeline.project.git_url >>
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
       - run:
           name: Setup evironment variables
           command: |
-            echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
+              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Test << pipeline.git.branch >>
+          command: yarn run test
+      - run:
+          name: Build << pipeline.git.branch >>
+          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
       - run:
           name: Setup git user
           command: |
             git config --global user.email "mrpachara@gmail.com"
             git config --global user.name "Pachara Tinamas"
       - run:
+          name: Environment variables
+          command: |
+              echo ${CIRCLE_PROJECT_REPONAME}
+              echo ${CIRCLE_REPOSITORY_URL}
+              echo ${REPOURL}
+              echo ${REPOPATH}
+      - run:
           name: Setup Github token
           command: |
-            echo ${CIRCLE_PROJECT_REPONAME}
-            echo ${CIRCLE_REPOSITORY_URL}
-            echo ${REPOURL}
-            echo ${REPOPATH}
             git remote set-url origin https://git:${GITHUB_TOKEN}@github.com${REPOPATH}.git
       - run:
           name: Deploy to gh-pages
@@ -68,16 +47,6 @@ jobs:
 workflows:
   test_and_deploy_my_app:
     jobs:
-      - initial
-      - test:
-          requires:
-            - initial
-      - build:
-          requires:
-            - initial
-      - deploy:
-          requires:
-            - test
-            - build
+      - test-and-deploy:
           context:
             - github-context
