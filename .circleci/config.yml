@@ -34,10 +34,6 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          name: Setup evironment variables
-          command: |
-              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
-      - run:
           name: Build << pipeline.git.branch >>
           command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
   deploy:
@@ -45,6 +41,10 @@ jobs:
       name: node/default
       tag: '16.17'
     steps:
+      - run:
+          name: Setup evironment variables
+          command: |
+              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
       - run:
           name: Setup git user
           command: |
