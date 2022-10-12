@@ -27,8 +27,6 @@ jobs:
     executor:
       name: node/default
       tag: '16.17'
-    environment:
-      - REPOURL: << pipeline.project.git_url >>
     steps:
       - checkout
       - node/install-packages:
@@ -40,6 +38,8 @@ jobs:
     executor:
       name: node/default
       tag: '16.17'
+    environment:
+      - REPOURL: << pipeline.project.git_url >>
     steps:
       - run:
           name: Setup evironment variables
