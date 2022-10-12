@@ -41,6 +41,9 @@ jobs:
     environment:
       - REPOURL: << pipeline.project.git_url >>
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
       - run:
           name: Setup evironment variables
           command: |
