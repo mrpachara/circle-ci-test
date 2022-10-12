@@ -57,7 +57,7 @@ jobs:
             echo ${CIRCLE_REPOSITORY_URL}
             echo ${REPOURL}
             echo ${REPOPATH}
-            git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${REPOPATH}.git
+            git remote set-url origin https://git:${GITHUB_TOKEN}@github.com${REPOPATH}.git
       - run:
           name: Deploy to gh-pages
           command: yarn run deploy
