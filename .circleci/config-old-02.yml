@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
-  initial:
+  test-and-deploy:
     executor:
       name: node/default
       tag: '16.17'
@@ -18,27 +18,12 @@ jobs:
               echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
       - node/install-packages:
           pkg-manager: yarn
-  test:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
       - run:
           name: Test << pipeline.git.branch >>
           command: yarn run test
-  build:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
       - run:
           name: Build << pipeline.git.branch >>
           command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
-  deploy:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
       - run:
           name: Setup git user
           command: |
@@ -62,16 +47,6 @@ jobs:
 workflows:
   test_and_deploy_my_app:
     jobs:
-      - initial
-      - test:
-          requires:
-            - initial
-      - build:
-          requires:
-            - initial
-      - deploy:
-          requires:
-            - test
-            - build
+      - test-and-deploy:
           context:
             - github-context
