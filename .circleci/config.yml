@@ -8,14 +8,8 @@ jobs:
     executor:
       name: node/default
       tag: '16.17'
-    environment:
-      - REPOURL: << pipeline.project.git_url >>
     steps:
       - checkout
-      - run:
-          name: Setup evironment variables
-          command: |
-              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
       - node/install-packages:
           pkg-manager: yarn
   test:
@@ -23,6 +17,9 @@ jobs:
       name: node/default
       tag: '16.17'
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
       - run:
           name: Test << pipeline.git.branch >>
           command: yarn run test
@@ -30,7 +27,16 @@ jobs:
     executor:
       name: node/default
       tag: '16.17'
+    environment:
+      - REPOURL: << pipeline.project.git_url >>
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Setup evironment variables
+          command: |
+              echo "export REPOPATH=${REPOURL#https://github.com}" >> "$BASH_ENV"
       - run:
           name: Build << pipeline.git.branch >>
           command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
