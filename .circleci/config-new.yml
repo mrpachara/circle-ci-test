@@ -23,17 +23,6 @@ jobs:
       - run:
           name: Test << pipeline.git.branch >>
           command: yarn run test
-  build:
-    executor:
-      name: node/default
-      tag: '16.17'
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          name: Build << pipeline.git.branch >>
-          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
   deploy:
     executor:
       name: node/default
@@ -44,6 +33,9 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+      - run:
+          name: Build << pipeline.git.branch >>
+          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
       - run:
           name: Setup evironment variables
           command: |
@@ -72,12 +64,8 @@ workflows:
       - test:
           requires:
             - initial
-      - build:
-          requires:
-            - initial
       - deploy:
           requires:
             - test
-            - build
           context:
             - github-context
