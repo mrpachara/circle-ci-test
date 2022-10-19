@@ -23,7 +23,7 @@ jobs:
           command: yarn run test
       - run:
           name: Build << pipeline.git.branch >>
-          command: PUBLIC_URL=/${CIRCLE_PROJECT_REPONAME} yarn run build
+          command: yarn run build
       - run:
           name: Setup git user
           command: |
